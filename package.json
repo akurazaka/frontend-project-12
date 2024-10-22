@@ -1,9 +1,8 @@
 {
   "name": "@hexlet/code",
   "version": "1.0.0",
-  "description": "",
+  "description": "Web Chat",
   "main": "index.js",
-  "proxy": "http://localhost:5001",
   "scripts": {
     "build": "npm run build --prefix frontend",
     "start": "start-server -s ./frontend/build",
@@ -13,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@hexlet/chat-server": "^2.0.4"
+    "@hexlet/chat-server": "^2.0.4",
+    "yup": "^1.4.0"
   }
 }
