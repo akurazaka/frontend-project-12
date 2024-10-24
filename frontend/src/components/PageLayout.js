@@ -13,7 +13,7 @@ const PageLayout = ({ children }) => {
   const isLoggedIn = useSelector(selectIsLoggedIn);
 
   const handleLogOut = () => {
-    dispatch(logOut()); // Очищаем user_data внутри userSlice
+    dispatch(logOut());
     navigate(routes.loginPagePath());
   };
 
