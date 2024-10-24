@@ -2,8 +2,7 @@ import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
-import { logOut } from '../store/userSlice';
-import { selectUserData } from '../store/userSlice';
+import { logOut, selectUserData } from '../store/userSlice';
 
 const useInstance = () => {
   const dispatch = useDispatch();
