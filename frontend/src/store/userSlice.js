@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
 
 const userString = localStorage.getItem('user_data');
@@ -17,6 +16,7 @@ export const userSlice = createSlice({
     },
     logOut: (state) => {
       state.userData = null;
+      localStorage.removeItem('user_data');
     },
   },
 });
@@ -24,7 +24,6 @@ export const userSlice = createSlice({
 export const { logIn, logOut } = userSlice.actions;
 
 export const selectIsLoggedIn = (state) => !!state.user.userData;
+export const selectUserData = (state) => state.user.userData;
 
 export default userSlice.reducer;
-
-export const selectUserData = (state) => state.user.userData;

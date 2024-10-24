@@ -13,10 +13,10 @@ const PageLayout = ({ children }) => {
   const isLoggedIn = useSelector(selectIsLoggedIn);
 
   const handleLogOut = () => {
-    localStorage.removeItem('user_data');
-    dispatch(logOut());
+    dispatch(logOut()); // Очищаем user_data внутри userSlice
     navigate(routes.loginPagePath());
   };
+
   return (
     <Stack className="h-100">
       <Navbar className="bg-body-tertiary p-2 shadow-sm navbar navbar-expand-lg navbar-light bg-white">
@@ -37,4 +37,5 @@ const PageLayout = ({ children }) => {
     </Stack>
   );
 };
+
 export default PageLayout;
