@@ -1,21 +1,24 @@
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { logOut } from '../store/userSlice';
+import { selectUserData } from '../store/userSlice';
 
 const useInstance = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
+  const userData = useSelector(selectUserData);
   const instance = axios.create({
     baseURL: '/api/v1',
     timeout: 5000,
   });
+
   const newInstance = async (request) => {
-    const userData = JSON.parse(localStorage.getItem('user_data'));
     const authHeaders = userData
       ? { Authorization: `Bearer ${userData.token}` }
       : {};
+
     try {
       return await instance({
         ...request,
@@ -28,6 +31,7 @@ const useInstance = () => {
         });
         return Promise.reject(error);
       }
+
       const { status } = error.response;
       if (status === 401) {
         toast.error(t('unauthorizedAccess'), {
@@ -36,6 +40,7 @@ const useInstance = () => {
         localStorage.removeItem('user_data');
         dispatch(logOut());
       }
+
       return Promise.reject(error);
     }
   };
