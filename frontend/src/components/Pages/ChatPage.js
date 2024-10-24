@@ -26,18 +26,24 @@ const ChatPage = () => {
   const { t } = useTranslation();
   const instance = useInstance();
   const channelId = useSelector((state) => state.channels.channelId);
-  const [modalInfo, setModalInfo] = useState({ type: null, channelId: null });
+  const [showModal, setShowModal] = useState(false);
+  const [showModalDelete, setShowModalDelete] = useState(false);
+  const [showModalChange, setShowModalChange] = useState(false);
+  const handleCloseModal = () => setShowModal(false);
+  const handleCloseModalChange = () => setShowModalChange(false);
+  const handleCloseDeleteModal = () => setShowModalDelete(false);
   const dispatch = useDispatch();
   const channels = useSelector((state) => state.channels.data);
   const existingNames = useSelector(selectChannelNames);
   const selectedChannel = useSelector((state) => selectChannelById(state, channelId));
-
-  const handleModalOpen = (type, id = null) => {
-    setModalInfo({ type, channelId: id });
+  const handleAddButton = () => {
+    setShowModal(true);
   };
-
-  const handleModalClose = () => {
-    setModalInfo({ type: null, channelId: null });
+  const handleDeleteChannelButton = (id) => {
+    setShowModalDelete(id);
+  };
+  const handleChangeChannelName = (id) => {
+    setShowModalChange(id);
   };
 
   useEffect(() => {
@@ -63,7 +69,7 @@ const ChatPage = () => {
           <Col sm={4} className="col-4 border-end px-0 bg-light flex-column h-100 d-flex">
             <div className="d-flex mt-1 justify-content-between mb-2 ps-4 pe-2 p-4">
               <b>{t('channels')}</b>
-              <AddButton onClick={() => handleModalOpen('add')} />
+              <AddButton onClick={handleAddButton} />
             </div>
             <ListGroup variant="flush">
               {channels.map((channel) => (
@@ -90,10 +96,10 @@ const ChatPage = () => {
                           <span className="visually-hidden">{t('make')}</span>
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
-                          <Dropdown.Item eventKey="1" onClick={() => handleModalOpen('remove', channel.id)}>
+                          <Dropdown.Item eventKey="1" onClick={() => handleDeleteChannelButton(channel.id)}>
                             {t('delete')}
                           </Dropdown.Item>
-                          <Dropdown.Item eventKey="2" onClick={() => handleModalOpen('rename', channel.id)}>
+                          <Dropdown.Item eventKey="1" onClick={() => handleChangeChannelName(channel.id)}>
                             {t('rename')}
                           </Dropdown.Item>
                         </Dropdown.Menu>
@@ -108,34 +114,23 @@ const ChatPage = () => {
             {selectedChannel && <ChatWindow channel={selectedChannel} />}
           </Col>
         </div>
-
-        {modalInfo.type === 'add' && (
-          <ModalAddChannel
-            t={t}
-            show
-            onHide={handleModalClose}
-            existingChannelNames={existingNames}
-          />
-        )}
-
-        {modalInfo.type === 'remove' && (
-          <ModalRemoveChannel
-            t={t}
-            show
-            onHide={handleModalClose}
-            channelId={modalInfo.channelId}
-          />
-        )}
-
-        {modalInfo.type === 'rename' && (
-          <ModalChangeChannelName
-            t={t}
-            show
-            onHide={handleModalClose}
-            channelId={modalInfo.channelId}
-            existingChannelNames={existingNames}
-          />
-        )}
+        <ModalAddChannel
+          t={t}
+          show={showModal}
+          onHide={handleCloseModal}
+          existingChannelNames={existingNames}
+        />
+        <ModalRemoveChannel
+          t={t}
+          show={showModalDelete}
+          onHide={handleCloseDeleteModal}
+        />
+        <ModalChangeChannelName
+          t={t}
+          show={showModalChange}
+          onHide={handleCloseModalChange}
+          existingChannelNames={existingNames}
+        />
       </div>
     </div>
   );
