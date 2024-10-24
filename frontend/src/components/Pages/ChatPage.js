@@ -47,13 +47,20 @@ const ChatPage = () => {
   };
 
   useEffect(() => {
-    instance({ method: 'get', url: routes.api.channelsPath() }).then((response) => {
-      dispatch(updateChannels(response.data));
-    });
-    instance({ method: 'get', url: routes.api.messagesPath() }).then((response) => {
-      dispatch(addAllMessages(response.data));
-    });
-  }, []);
+    const fetchData = async () => {
+      try {
+        const [channelsResponse, messagesResponse] = await Promise.all([
+          instance({ method: 'get', url: routes.api.channelsPath() }),
+          instance({ method: 'get', url: routes.api.messagesPath() }),
+        ]);
+        dispatch(updateChannels(channelsResponse.data));
+        dispatch(addAllMessages(messagesResponse.data));
+      } catch (error) {
+        console.error('Failed to fetch data:', error);
+      }
+    };
+    fetchData();
+  }, [dispatch, instance]);
 
   return (
     <div className="h-100 p-5">
