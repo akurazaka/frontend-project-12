@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import imageSearch from '../images/imageSearch.svg';
 
 const NotFoundPage = () => {
   const { t } = useTranslation();
@@ -8,7 +9,7 @@ const NotFoundPage = () => {
       <img
         alt={t('notFound')}
         className="img-fluid h-25"
-        src="https://frontend-chat-ru.hexlet.app/static/media/404.38677c8fa96b7e2b6537040f39020684.svg"
+        src={imageSearch}
       />
       <h1>{t('notFound')}</h1>
       <p>

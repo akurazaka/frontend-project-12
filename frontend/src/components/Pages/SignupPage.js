@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next';
 import routes from '../../routes';
 import useInstance from '../../utils/axios';
 import { logIn } from '../../store/userSlice';
+import avatar from '../images/avatar.jpg';
 
 const SignupForm = () => {
   const { t } = useTranslation();
@@ -68,7 +69,7 @@ const SignupForm = () => {
               <div className="card-body d-flex flex-column flex-md-row justify-content-around align-items-center p-5">
                 <img
                   className="rounded-circle"
-                  src="https://frontend-chat-ru.hexlet.app/static/media/avatar_1.6084447160acc893a24d.jpg"
+                  src={avatar}
                   alt={t('registration')}
                 />
                 <Form onSubmit={formik.handleSubmit} className="mx-auto col-6">

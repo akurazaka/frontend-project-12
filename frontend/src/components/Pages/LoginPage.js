@@ -11,6 +11,7 @@ import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import routes from '../../routes';
 import { logIn } from '../../store/userSlice';
 import useInstance from '../../utils/axios';
+import imageSearch from '../images/imageSearch.svg';
 
 const LoginForm = () => {
   const { t } = useTranslation();
@@ -57,7 +58,7 @@ const LoginForm = () => {
               <img
                 alt={t('notFound')}
                 className="img-fluid"
-                src="https://frontend-chat-ru.hexlet.app/static/media/404.38677c8fa96b7e2b6537040f39020684.svg"
+                src={imageSearch}
               />
             </div>
             <Form onSubmit={formik.handleSubmit} className="col-md-5 mx-auto ">
