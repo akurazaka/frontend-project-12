@@ -1,11 +1,11 @@
-// ChatPage.js
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  ButtonGroup, Col, ListGroup, Dropdown, Button,
+  ButtonGroup, Col, ListGroup, Dropdown, Button, Spinner, Alert,
 } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import filter from 'leo-profanity';
+import useInstance from '../../utils/axios';
 import {
   selectChannelById, selectChannelNames, setChannel, updateChannels,
   toggleModalAdd, toggleModalDelete, toggleModalChange,
@@ -17,10 +17,10 @@ import ModalAddChannel from '../Modals/ModalAddChannel';
 import ModalRemoveChannel from '../Modals/ModalRemoveChannel';
 import ModalChangeChannelName from '../Modals/ModalChangeChannelName';
 import routes from '../../routes';
-import { useGetMessagesQuery, useSendMessageMutation } from '../../store/chatApi';
 
 const ChatPage = () => {
   const { t } = useTranslation();
+  const instance = useInstance();
   const dispatch = useDispatch();
   const channelId = useSelector((state) => state.channels.channelId);
   const showModal = useSelector((state) => state.channels.showModalAdd);
@@ -29,38 +29,49 @@ const ChatPage = () => {
   const channels = useSelector((state) => state.channels.data);
   const existingNames = useSelector(selectChannelNames);
   const selectedChannel = useSelector((state) => selectChannelById(state, channelId));
-  
-  // Используем RTK Query для получения сообщений
-  const { data: messages = [], error, isLoading } = useGetMessagesQuery(channelId);
-  const [sendMessage, { isLoading: isSending, error: sendError }] = useSendMessageMutation();
-  const [newMessage, setNewMessage] = useState('');
+
+  // Добавлено состояние для отслеживания загрузки и ошибок
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true); // Начинаем загрузку
       try {
-        const channelsResponse = await instance({ method: 'get', url: routes.api.channelsPath() });
+        // Увеличьте задержку перед началом загрузки данных
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        
+        const [channelsResponse, messagesResponse] = await Promise.all([
+          instance({ method: 'get', url: routes.api.channelsPath() }),
+          instance({ method: 'get', url: routes.api.messagesPath() }),
+        ]);
+
         dispatch(updateChannels(channelsResponse.data));
-        // Удаляем запрос на получение сообщений из useEffect
+        dispatch(addAllMessages(messagesResponse.data));
       } catch (error) {
-        console.error('Failed to fetch channels:', error);
+        console.error('Failed to fetch data:', error);
+        setError(t('error.fetchData')); // Отобразить ошибку
+      } finally {
+        setLoading(false); // Завершаем загрузку
       }
     };
+    
     fetchData();
-  }, [dispatch]);
-
-  const handleSendMessage = async () => {
-    if (newMessage.trim()) {
-      await sendMessage({ channelId, text: newMessage }); // Отправляем сообщение
-      setNewMessage(''); // Очищаем поле ввода
-    }
-  };
-
-  if (isLoading) return <div>Загрузка сообщений...</div>;
-  if (error) return <div>Ошибка: {error.message}</div>;
+  }, [dispatch, instance, t]);
 
   return (
     <div className="h-100 p-5">
       <div className="container overflow-hidden rounded shadow d-flex flex-column h-100">
+        {loading && (
+          <Spinner animation="border" role="status" className="m-auto">
+            <span className="visually-hidden">{t('loading')}</span>
+          </Spinner>
+        )}
+        {error && (
+          <Alert variant="danger" className="m-2">
+            {error}
+          </Alert>
+        )}
         <div className="row h-100 bg-white flex-md-row">
           <Col sm={4} className="col-4 border-end px-0 bg-light flex-column h-100 d-flex">
             <div className="d-flex mt-1 justify-content-between mb-2 ps-4 pe-2 p-4">
@@ -80,7 +91,6 @@ const ChatPage = () => {
                       {'# '}
                       {filter.clean(channel.name)}
                     </Button>
-
                     {channel.removable ? (
                       <Dropdown>
                         <Dropdown.Toggle
@@ -107,24 +117,8 @@ const ChatPage = () => {
             </ListGroup>
           </Col>
           <Col sm={8} className="col p-0 h-100">
-            {selectedChannel && <ChatWindow channel={selectedChannel} messages={messages} />}
+            {selectedChannel && <ChatWindow channel={selectedChannel} />}
           </Col>
-        </div>
-        <div className="d-flex justify-content-between mt-3">
-          <input
-            type="text"
-            className="form-control"
-            value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
-            placeholder="Введите сообщение..."
-          />
-          <button
-            className="btn btn-primary ms-2"
-            onClick={handleSendMessage}
-            disabled={isSending}
-          >
-            {isSending ? 'Отправка...' : 'Отправить'}
-          </button>
         </div>
         <ModalAddChannel
           t={t}
