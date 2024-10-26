@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import userReducer from './userSlice';
 import channelReducer from './channelSlice';
 import messagesReducer from './messageSlice';
+import chatApi from './chatApi';
 
 const createStore = () => configureStore({
   reducer: {
@@ -10,7 +11,7 @@ const createStore = () => configureStore({
     channels: channelReducer,
     messages: messagesReducer,
   },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(chatApi.middleware),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(chatApi.middleware),
 });
+
 export default createStore;

@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Col, ListGroup, ButtonGroup, Dropdown, Button } from 'react-bootstrap';
+import {
+  Col, ListGroup, ButtonGroup, Dropdown, Button,
+} from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import filter from 'leo-profanity';
-import { apiService, useGetChannelsQuery, useGetMessagesQuery } from '../../store/apiService';
+import { useGetChannelsQuery } from '../../store/apiService';
 import {
   setChannel, toggleModalAdd, toggleModalDelete, toggleModalChange,
 } from '../../store/channelSlice';
@@ -21,7 +22,6 @@ const ChatPage = () => {
   const showModalDelete = useSelector((state) => state.channels.showModalDelete);
   const showModalChange = useSelector((state) => state.channels.showModalChange);
   const { data: channels = [] } = useGetChannelsQuery();
-  const { data: messages = [] } = useGetMessagesQuery();
 
   return (
     <div className="h-100 p-5">
