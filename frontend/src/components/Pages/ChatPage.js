@@ -1,18 +1,15 @@
-import React, {
-  useEffect, useState,
-} from 'react';
+// ChatPage.js
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  ButtonGroup,
-  Col, ListGroup,
+  ButtonGroup, Col, ListGroup, Dropdown, Button,
 } from 'react-bootstrap';
-import Dropdown from 'react-bootstrap/Dropdown';
-import Button from 'react-bootstrap/Button';
 import { useTranslation } from 'react-i18next';
 import filter from 'leo-profanity';
 import useInstance from '../../utils/axios';
 import {
   selectChannelById, selectChannelNames, setChannel, updateChannels,
+  toggleModalAdd, toggleModalDelete, toggleModalChange,
 } from '../../store/channelSlice';
 import ChatWindow from '../ChatWindow';
 import { addAllMessages } from '../../store/messageSlice';
@@ -25,26 +22,14 @@ import routes from '../../routes';
 const ChatPage = () => {
   const { t } = useTranslation();
   const instance = useInstance();
-  const channelId = useSelector((state) => state.channels.channelId);
-  const [showModal, setShowModal] = useState(false);
-  const [showModalDelete, setShowModalDelete] = useState(false);
-  const [showModalChange, setShowModalChange] = useState(false);
-  const handleCloseModal = () => setShowModal(false);
-  const handleCloseModalChange = () => setShowModalChange(false);
-  const handleCloseDeleteModal = () => setShowModalDelete(false);
   const dispatch = useDispatch();
+  const channelId = useSelector((state) => state.channels.channelId);
+  const showModal = useSelector((state) => state.channels.showModalAdd);
+  const showModalDelete = useSelector((state) => state.channels.showModalDelete);
+  const showModalChange = useSelector((state) => state.channels.showModalChange);
   const channels = useSelector((state) => state.channels.data);
   const existingNames = useSelector(selectChannelNames);
   const selectedChannel = useSelector((state) => selectChannelById(state, channelId));
-  const handleAddButton = () => {
-    setShowModal(true);
-  };
-  const handleDeleteChannelButton = (id) => {
-    setShowModalDelete(id);
-  };
-  const handleChangeChannelName = (id) => {
-    setShowModalChange(id);
-  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -69,7 +54,7 @@ const ChatPage = () => {
           <Col sm={4} className="col-4 border-end px-0 bg-light flex-column h-100 d-flex">
             <div className="d-flex mt-1 justify-content-between mb-2 ps-4 pe-2 p-4">
               <b>{t('channels')}</b>
-              <AddButton onClick={handleAddButton} />
+              <AddButton onClick={() => dispatch(toggleModalAdd(true))} />
             </div>
             <ListGroup variant="flush">
               {channels.map((channel) => (
@@ -89,17 +74,17 @@ const ChatPage = () => {
                       <Dropdown>
                         <Dropdown.Toggle
                           split
-                          className="class=flex-grow-0 dropdown-toggle dropdown-toggle-split btn btn-secondary"
+                          className="flex-grow-0 dropdown-toggle dropdown-toggle-split btn btn-secondary"
                           variant={channel.id === channelId ? 'secondary' : 'light'}
                           style={{ borderRadius: '0px 8px 8px 0px' }}
                         >
                           <span className="visually-hidden">{t('make')}</span>
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
-                          <Dropdown.Item eventKey="1" onClick={() => handleDeleteChannelButton(channel.id)}>
+                          <Dropdown.Item eventKey="1" onClick={() => dispatch(toggleModalDelete(channel.id))}>
                             {t('delete')}
                           </Dropdown.Item>
-                          <Dropdown.Item eventKey="1" onClick={() => handleChangeChannelName(channel.id)}>
+                          <Dropdown.Item eventKey="1" onClick={() => dispatch(toggleModalChange(channel.id))}>
                             {t('rename')}
                           </Dropdown.Item>
                         </Dropdown.Menu>
@@ -117,18 +102,18 @@ const ChatPage = () => {
         <ModalAddChannel
           t={t}
           show={showModal}
-          onHide={handleCloseModal}
+          onHide={() => dispatch(toggleModalAdd(false))}
           existingChannelNames={existingNames}
         />
         <ModalRemoveChannel
           t={t}
           show={showModalDelete}
-          onHide={handleCloseDeleteModal}
+          onHide={() => dispatch(toggleModalDelete(null))}
         />
         <ModalChangeChannelName
           t={t}
           show={showModalChange}
-          onHide={handleCloseModalChange}
+          onHide={() => dispatch(toggleModalChange(null))}
           existingChannelNames={existingNames}
         />
       </div>

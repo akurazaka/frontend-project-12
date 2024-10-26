@@ -3,7 +3,13 @@ import { createSelector, createSlice } from '@reduxjs/toolkit';
 
 const DEFAULT_CHANNEL_ID = '1';
 
-const initialState = { data: [], channelId: DEFAULT_CHANNEL_ID };
+const initialState = { 
+  data: [], 
+  channelId: DEFAULT_CHANNEL_ID,
+  showModalAdd: false,
+  showModalDelete: null,
+  showModalChange: null,
+};
 
 export const channelSlice = createSlice({
   name: 'channels',
@@ -31,8 +37,18 @@ export const channelSlice = createSlice({
     setChannel: (state, action) => {
       state.channelId = action.payload;
     },
+    toggleModalAdd: (state, action) => {
+      state.showModalAdd = action.payload;
+    },
+    toggleModalDelete: (state, action) => {
+      state.showModalDelete = action.payload;
+    },
+    toggleModalChange: (state, action) => {
+      state.showModalChange = action.payload;
+    },
   },
 });
+
 export const selectChannelNames = createSelector(
   (state) => state.channels.data,
   (channels) => channels.map((channel) => channel.name),
@@ -46,6 +62,7 @@ export const selectChannelById = createSelector(
 
 export const {
   updateChannels, addChannel, removeChannel, setChannel, editChannel,
+  toggleModalAdd, toggleModalDelete, toggleModalChange,
 } = channelSlice.actions;
 
 export default channelSlice.reducer;
