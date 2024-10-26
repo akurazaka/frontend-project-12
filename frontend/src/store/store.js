@@ -5,10 +5,12 @@ import messagesReducer from './messageSlice';
 
 const createStore = () => configureStore({
   reducer: {
+    [chatApi.reducerPath]: chatApi.reducer,
     user: userReducer,
     channels: channelReducer,
     messages: messagesReducer,
   },
-
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(chatApi.middleware),
 });
 export default createStore;
