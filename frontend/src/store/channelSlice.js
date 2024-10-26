@@ -3,8 +3,8 @@ import { createSelector, createSlice } from '@reduxjs/toolkit';
 
 const DEFAULT_CHANNEL_ID = '1';
 
-const initialState = { 
-  data: [], 
+const initialState = {
+  data: [],
   channelId: DEFAULT_CHANNEL_ID,
   showModalAdd: false,
   showModalDelete: null,
