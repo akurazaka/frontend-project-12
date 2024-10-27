@@ -40,7 +40,7 @@ npx eslint .
 ```
 
 ## Вход в Чат
-![Вход в Чат](./frontend/src/components/images/exampleLogin.png)
+![Вход в Чат](./frontend/src/shared/assets/images/exampleLogin.png)
 
 ## Чат
-![Чат](./frontend/src/components/images/exampleChat.png)
+![Чат](./frontend/src/shared/assets/images/exampleChat.png)

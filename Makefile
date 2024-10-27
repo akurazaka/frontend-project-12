@@ -5,7 +5,7 @@ start-frontend:
 	make -C frontend start
 
 start-backend:
-	npx start-server -s ./frontend/build
+	npx start-server -s ./frontend/dist
 
 deploy:
 	git push heroku main
@@ -17,5 +17,5 @@ develop:
 	make start-backend & make start-frontend
 
 build:
-	rm -rf frontend/build
+	rm -rf frontend/dist
 	npm run build
