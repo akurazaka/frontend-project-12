@@ -10,7 +10,7 @@ const AddChannelButton = () => {
       className="p-0 text-primary btn btn-group-vertical"
       onClick={() => handleOpenModal('add')}
     >
-      <img src={plusButton} alt='add'/>
+      <img src={plusButton} alt="add" />
       <span className="visually-hidden">+</span>
     </button>
   );

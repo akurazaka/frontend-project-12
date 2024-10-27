@@ -32,7 +32,7 @@ const MessageInput = ({ input, setInput, handleSendMessage }) => {
             className="btn btn-group-vertical"
             onClick={(e) => handleSendMessage(e)}
           >
-            <img src={arrowRight} alt='send' />
+            <img src={arrowRight} alt="send" />
             <span className="visually-hidden">{t('send')}</span>
           </button>
         </div>

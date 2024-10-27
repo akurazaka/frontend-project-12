@@ -11,7 +11,7 @@ const Signup = () => {
         <div className="col-12 col-md-8 col-xxl-6">
           <div className="card shadow-sm">
             <div className="card-body d-flex flex-column flex-md-row justify-content-around align-items-center p-5">
-              <img
+              
                 src={imageSearch}
                 className="rounded-circle"
                 alt={t('signUp')}
